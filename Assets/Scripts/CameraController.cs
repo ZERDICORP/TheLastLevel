@@ -1,22 +1,51 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Camera))]
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] private Transform player;
-    private Vector3 pos;
+    [SerializeField] private Rigidbody2D playerRigidbody;
+    [SerializeField] private float cameraSpeed = 200f;
+    [SerializeField] private BoxCollider2D cameraBounds;
+
+    private Camera cam;
+    private float camHeight;
+    private float camWidth;
 
     private void Awake()
     {
-        if (!player)
+        if (!playerRigidbody)
         {
-            player = FindFirstObjectByType<Hero>().transform;
+            var hero = FindFirstObjectByType<Hero>();
+            if (hero) playerRigidbody = hero.GetComponent<Rigidbody2D>();
         }
+
+        cam = GetComponent<Camera>();
+        cam.orthographicSize = 3f;
+
+        camHeight = cam.orthographicSize;
+        camWidth = camHeight * cam.aspect;
     }
+
     private void Update()
     {
-        pos = player.position;
-        pos.z = -10f;
+        if (!playerRigidbody || !cameraBounds) return;
 
-        transform.position = Vector3.Lerp(transform.position, pos, Time.deltaTime);
+        Vector3 targetPos = playerRigidbody.position;
+        targetPos.z = -10f;
+        targetPos.y += 1f;
+
+        Bounds bounds = cameraBounds.bounds;
+
+        float minX = bounds.min.x + camWidth;
+        float maxX = bounds.max.x - camWidth;
+        float minY = bounds.min.y + camHeight;
+        float maxY = bounds.max.y - camHeight;
+
+        float clampedX = Mathf.Clamp(targetPos.x, minX, maxX);
+        float clampedY = Mathf.Clamp(targetPos.y, minY, maxY);
+
+        Vector3 clampedTarget = new Vector3(clampedX, clampedY, targetPos.z);
+
+        transform.position = Vector3.Lerp(transform.position, clampedTarget, cameraSpeed * Time.deltaTime);
     }
 }
