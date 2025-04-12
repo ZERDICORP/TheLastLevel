@@ -15,7 +15,7 @@ public class CameraController : MonoBehaviour
     {
         if (!playerRigidbody)
         {
-            var hero = FindFirstObjectByType<Hero>();
+            var hero = FindFirstObjectByType<Player>();
             if (hero) playerRigidbody = hero.GetComponent<Rigidbody2D>();
         }
 
