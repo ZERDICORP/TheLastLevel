@@ -1134,7 +1134,7 @@ GameObject:
   - component: {fileID: 232084866105272144}
   - component: {fileID: 9065377286190970736}
   m_Layer: 0
-  m_Name: Base
+  m_Name: BaseTilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
